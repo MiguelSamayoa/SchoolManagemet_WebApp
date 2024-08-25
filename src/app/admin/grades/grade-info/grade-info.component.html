@@ -1,0 +1,139 @@
+<div class="absolute inset-0"  *ngIf="isLoading">
+  <div class="flex items-center justify-center h-full z-10 bg-base-100">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+</div>
+
+<grade-edit
+  *ngIf="isUpdating"
+  (loadingEmitter)="loadingToggle()"
+  (updatingEmitter)="updatingToggle()"
+  [Grade]="grado"
+  class="flex flex-col items-center justify-center p-0 m-0 h-full z-0">
+</grade-edit>
+
+<div class="flex flex-col h-full " *ngIf="!isUpdating">
+
+  <div class="card w-11/12 bg-base-200 mb-10 mx-auto shadow-xl h-32">
+    <div class="card-body p-2 text-lg flex flex-col">
+
+      <div class="flex m-0 ml-5 items-center">
+        <div class="w-11/12">
+          <div class="card-title">{{grado?.grade?.gradeName}} {{grado?.year}}-{{grado?.section}}</div>
+        </div>
+
+        <div class="card-actions justify-end">
+          <button class="btn btn-success" (click)="Actualizar()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <h2 class="mb-2 ml-5">Catedratico Guia: {{grado?.professor_Guide?.firstName}} {{grado?.professor_Guide?.lastName}} </h2>
+   </div>
+  </div>
+
+  <ul class="menu mx-auto w-11/12 menu-horizontal rounded-box">
+    <li class="text-md rounded-box" [ngClass]="StudentOrCourse ? 'bg-accent' : 'bg-ghost'" (click)="setStudentOrCourse(true)"><a>Alumnos</a></li>
+    <li class="text-md rounded-box" [ngClass]="!StudentOrCourse ? 'bg-accent' : 'bg-ghost'" (click)="setStudentOrCourse(false)"><a>Cursos</a></li>
+  </ul>
+
+  <div class="mx-auto w-11/12 h-4/6 overflow-auto" *ngIf="cursos && StudentOrCourse">
+    <div>
+      <div class="navbar shadow bg-base-100">
+        <div class="flex-1">
+          <a class="btn btn-ghost text-xl">Alumnos</a>
+          <i>{{estudianes.length}} alumnos registrados</i>
+        </div>
+      </div>
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th class="hidden sm:table-cell"></th>
+            <th class="">Alumno</th>
+            <th class="">Email</th>
+            <th class="hidden sm:table-cell">Direccion</th>
+            <th class="hidden md:table-cell text-center">Genero</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of estudianes; let i = index" >
+            <td class="hidden sm:table-cell"> {{i+1}} </td>
+            <td >{{item.firstName}} {{item.lastName}}</td>
+            <td >{{item.email}}</td>
+            <td class="hidden sm:table-cell">{{item.address}}</td>
+            <td class="hidden md:table-cell text-center">{{item.gender}}</td>
+            <!-- <td *ngIf="item.teacher.firstName && item.teacher.lastName" >{{item.teacher.firstName}} {{item.teacher.lastName}}</td> -->
+
+            <!-- <td class="text-center">
+              <div class="badge h-auto text-base-100 p-1"
+              [ngClass]="{
+                'badge-success': item.state.state === 'Aprobado',
+                'badge-error': item.state.state === 'Rechazado',
+                'badge-secondary': item.state.state === 'Pendiente de Revision',
+                'badge-primary': item.state.state === 'Activo',
+                'badge-info': item.state.state === 'Archivado'
+              }">
+              {{item.state.state}}
+              </div>
+
+
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="mx-auto mt-10 h-4/6 overflow-auto" *ngIf="StudentOrCourse && !cursos">
+    No hay alumnos registrados
+  </div>
+
+  <div class="mx-auto w-11/12 h-4/6 overflow-auto" *ngIf=" cursos && !StudentOrCourse">
+    <div>
+      <div class="navbar shadow bg-base-100">
+        <div class="flex-1">
+          <a class="btn btn-ghost text-xl">Cursos</a>
+        </div>
+      </div>
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th class="">Curso</th>
+            <th class="">Catedratico</th>
+            <th class="text-center">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cursos; let i = index" >
+            <td (click)="navigateToCourse(item.gradeCourseId)">{{item.course.courseName}}</td>
+            <td (click)="navigateToUser(item.teacher.userId)" *ngIf="item.teacher.firstName && item.teacher.lastName" >{{item.teacher.firstName}} {{item.teacher.lastName}}</td>
+
+            <td class="text-center">
+              <div class="badge h-auto text-base-100 p-1"
+              [ngClass]="{
+                'badge-success': item.state.state === 'Aprobado',
+                'badge-error': item.state.state === 'Rechazado',
+                'badge-secondary': item.state.state === 'Pendiente de Revision',
+                'badge-primary': item.state.state === 'Activo',
+                'badge-info': item.state.state === 'Archivado'
+              }">
+              {{item.state.state}}
+            </div>
+
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="mx-auto mt-10 h-4/6 overflow-auto" *ngIf="!StudentOrCourse && !cursos">
+    No hay cursos registrados
+  </div>
+</div>

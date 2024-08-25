@@ -1,0 +1,73 @@
+<div class="h-screen">
+  <nav class="navbar bg-base-300 shadow header-navbar">
+    <div class="text-base-content text-xl" >Centro Educativo Campus Sur</div>
+  </nav>
+
+  <div class="w-screen flex body-login">
+
+    <div class="login-image w-1/2">
+      <img src="../../assets/img/School.jpg" alt="Logo Campus Sur" class="imagen">
+    </div>
+
+
+    <div class="login-container flex items-center	justify-center w-1/2">
+
+      <div class="bg-base-200 py-100 px-10 rounded-badge h-auto w-2/3">
+        <div class="flex justify-center flex-col">
+          <div class="mt-10">
+            <h2 class="text-center">--logo--</h2>
+            <h2 class="text-center">Inicio de Sesion</h2>
+          </div>
+          <form (ngSubmit)="login()" [formGroup]="loginForm" class="" >
+
+            <div class="my-5">
+              <div class="label">
+                <span class="label-text">Correo Electronico</span>
+              </div>
+              <input class="form-input" type="email" formControlName="email" name="email" required>
+              <small class="text-error" *ngIf="email?.errors?.['required'] && email?.touched">Debe ingresar un Correo.</small>
+              <small class="text-error" *ngIf="email?.errors?.['email'] && email?.touched">
+                Debe de ingresar un correo valido.
+              </small>
+            </div>
+
+            <div class="my-5">
+              <div class="label">
+                <span class="label-text">Contraseña</span>
+              </div>
+              <input label="Contraseña" labelPlacement="floating" class="form-input" type="password" formControlName="password" name="password" required minlength="8">
+              <small class="text-error" *ngIf="password?.errors?.['required'] && password?.touched">Debe ingresar una Contraseña.</small>
+              <small class="text-error" *ngIf="password?.errors?.['minLength'] && password?.touched">
+                La contraseña debe tener al menos 8 caracteres.
+              </small>
+            </div >
+
+            <div class="my-5">
+              <button class="btn btn-secondary form-input" type="submit" [disabled]="loginForm.invalid">Iniciar Sesión</button>
+            </div>
+        </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!--
+<div role="alert" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 w-full md:w-3/4 lg:w-1/2 z-10">
+  <div class="flex items-center justify-start mx-auto w-full max-w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded alert alert-error">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 mr-2 flex-shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Error! Task failed successfully.</span>
+  </div>
+</div> -->
+

@@ -1,0 +1,88 @@
+
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="bg-base-200 rounded-lg flex flex-col justify-center p-10">
+
+  <div class="flex-1">
+    <button>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+      </svg>
+
+    </button>
+
+    <a class="btn btn-ghost text-xl">Modificar Usuario {{Usuario.firstName}} {{Usuario.lastName}}</a>
+  </div>
+
+  <div class="w-full mb-2 flex justify-evenly">
+
+    <div class="w-5/12">
+      <label for="firstName" class="label m-0">Nombre</label>
+      <input id="firstName" type="text" formControlName="FirstName" class="input m-0 input-bordered w-full">
+    </div>
+
+    <div class="w-5/12">
+      <label for="lastName" class="label">Apellido</label>
+      <input id="lastName" type="text" formControlName="LastName" class="input input-bordered w-full">
+    </div>
+
+  </div>
+
+  <div class="w-full mb-4 flex justify-evenly">
+
+    <div class="w-5/12">
+      <label for="email" class="label">Email</label>
+      <input id="email" type="email" formControlName="Email" class="input input-bordered w-full">
+    </div>
+
+    <div class="w-5/12">
+      <label for="phone" class="label">Numero Telefonico</label>
+      <input id="phone" type="text" formControlName="Phone" class="input input-bordered w-full">
+    </div>
+
+  </div>
+
+  <div class="w-full mb-4 flex justify-evenly">
+
+    <div class="w-5/12">
+      <label for="address" class="label">Direccion</label>
+      <input id="address" type="text" formControlName="Address" class="input input-bordered w-full">
+    </div>
+
+    <div class="w-5/12">
+      <label for="imgProfile" class="label">Foto de Perfil</label>
+      <div class="flex justify-center items-center">
+        <div *ngIf="imgURL" class="avatar">
+          <div class="w-20 rounded-full items-center">
+            <img [src]="imgURL" alt="Foto de Perfil"/>
+          </div>
+        </div>
+        <input id="imgProfile" type="file" (change)="onFileChange($event)" accept="image/*" class="file-input file-input-bordered file-input-md w-full">
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full mb-4 flex justify-evenly">
+
+    <div class="w-5/12">
+      <label for="gender" class="label">Genero</label>
+      <select id="gender" formControlName="Gender" class="select select-bordered w-full">
+        <option value="" disabled>Select gender</option>
+        <option value="Hombre">Hombre</option>
+        <option value="Mujer">Mujer</option>
+      </select>
+    </div>
+
+    <div class="w-5/12">
+      <label for="roleId" class="label">Role</label>
+      <select id="roleId" formControlName="RoleId" class="select select-bordered w-full">
+        <option value="" disabled>Selecciona el rol</option>
+        <option value="1">Admininstrador</option>
+        <option value="2">Catedratico</option>
+      </select>
+    </div>
+
+  </div>
+  <div class="justify-end flex w-full ">
+    <button type="submit" class="btn btn-primary w-1/4" [disabled]="userForm.invalid">Submit</button>
+  </div>
+
+</form>

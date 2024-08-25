@@ -1,0 +1,45 @@
+<!-- user-form.component.html -->
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="mx-5 md:mx-20 p-4 bg-base-200 rounded-lg flex flex-wrap justify-center">
+
+  <div class="mb-4 mx-5 w-3/4 md:w-1/3">
+    <label for="professorGuide" class="label">Catedratico Guia</label>
+    <select id="professorGuide" formControlName="professorGuide" class="select select-bordered w-full">
+      <option value="" >Seleccion un Catedratico</option>
+
+      <option *ngFor="let user of Teaches ; let i = index" [value]="user.userId" >{{user.firstName}} {{user.lastName}}</option>
+
+    </select>
+  </div>
+
+  <div class="mb-4 mx-5 w-3/4 md:w-1/3">
+    <label for="year" class="label">Año</label>
+    <select id="year" formControlName="year" class="select select-bordered w-full">
+      <option [value]="thisYear-1" >{{thisYear-1}}</option>
+      <option [value]="thisYear" >{{thisYear}}</option>
+      <option [value]="thisYear+1" >{{thisYear+1}}</option>
+
+    </select>
+  </div>
+
+  <div class="mb-4 mx-5 w-3/4 md:w-1/3">
+    <label for="gradeId" class="label">Grado</label>
+    <select id="gradeId" formControlName="gradeId" class="select select-bordered w-full">
+      <option value="" disabled>Selecciona el grado</option>
+
+      <option *ngFor="let grade of CatalogoGrados; let i = index" [value]="grade.gradeId">{{grade.gradeName}}</option>
+    </select>
+  </div>
+
+  <div class="mb-4 mx-5 w-3/4 md:w-1/3">
+    <label for="section" class="label">Seccion</label>
+    <select id="section" formControlName="section" class="select select-bordered w-full">
+      <option *ngFor="let section of Seccion; let i = index" [value]="section" >{{section}}</option>
+
+    </select>
+  </div>
+
+  <div class="justify-end flex mt-10 w-full">
+    <button type="submit" class="btn btn-primary w-1/4" [disabled]="userForm.invalid">Submit</button>
+  </div>
+
+</form>

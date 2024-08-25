@@ -1,0 +1,18 @@
+.Content{
+  display: flex;
+  height: 87vh;
+}
+
+.header-home{
+ height: 10vh;
+}
+
+.menu{
+  border-right: 3px solid var( --bs-light-border-subtle );
+  height: 90vh;
+  width: 15vw;
+}
+
+.home-navbar{
+  height: 10vh;
+}
