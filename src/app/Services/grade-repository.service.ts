@@ -5,6 +5,7 @@ import { GradeBase, GradeWithCourses, InsertGradeDTO } from '../model/Grade.mode
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Grade } from '../model/Grade.model';
+import { Student } from '../model/Student.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,30 +19,24 @@ export class GradeRepository {
     return await this.http.get<Grade[]>(this.route).toPromise();
   }
 
-  async getById(id: number): Promise<GradeWithCourses|undefined> {
-    return this.http.get<GradeWithCourses>(`${this.route}/${id}`).toPromise();
+  async GetNextGrade(id:number) : Promise<Grade[] | undefined> {
+    return await this.http.get<Grade[]>(`${this.route}/NexGrade/${id}`).toPromise();
   }
 
-  // async UpdateGrade(Grade: GradeWithManager, changedGrade:any): Promise<GradeWithManager|null> {
+  async ListWithStudent() : Promise<{ students: Student[], active:boolean, gradeId: number, gradeName: string, year:number, teacherName:string, section: string }[] | undefined> {
+    return await this.http.get<{ students: Student[], active:boolean, gradeId: number, gradeName: string, year:number, teacherName:string, section: string }[]>(`${this.route}/WithStudent`).toPromise();
+  }
 
-  //   const formData = new FormData();
-
-  //   // Suponiendo que Grade y changedGrade son objetos con las propiedades manager, academic_Level, etc.
-  //   if (Grade.managerId !== changedGrade.manager) formData.append('manager', changedGrade.manager);
-  //   if (Grade.academic_Level !== changedGrade.academic_Level) formData.append('academic_Level', changedGrade.level);
-  //   if (Grade.state !== changedGrade.state) formData.append('state', changedGrade.state);
-
-  //   try {
-  //     const usuario = await this.http.put<GradeWithManager>(`${this.route}/${Grade.id}`, formData).toPromise();
-  //     return usuario ? usuario : null;
-  //   } catch (error) {
-  //     console.error("Error al actualizar el usuario:", error);
-  //     return null;
-  //   }
-  // }
+  getById(id: number): Observable<GradeWithCourses> {
+    return this.http.get<GradeWithCourses>(`${this.route}/${id}`);
+  }
 
   async DeleteGrade( Id: number ) : Promise<void> {
     await this.http.delete(`${this.route}/${Id}`).toPromise();
+  }
+
+  async CreateEmpty(grade: InsertGradeDTO) : Promise<void> {
+    await this.http.post(`${this.route}/Empty`, grade).toPromise();
   }
 
   async Create(grade: InsertGradeDTO) : Promise<void> {
@@ -53,20 +48,6 @@ export class GradeRepository {
   }
 
   GetCatalogo(): Observable<GradeBase[]> {
-    return this.http.get<GradeBase[]>(`${this.route}/GradeCatalogo`);
+    return this.http.get<GradeBase[]>(`${this.route}/Catalogo`);
   }
-
-  // async CreateGrade(grade: any) : Promise<GradeWithManager> {
-  //   this.http.post<GradeWithManager>(this.route, grade).toPromise().then(response => {
-  //     console.log( "La respuesta es: ", response);
-  //     if(response)return response;
-  //     return new GradeWithManager();
-  //   }).catch(error => {
-  //     console.log( "El error es: ", error);
-  //     return new GradeWithManager();
-  //   });
-  //   return new GradeWithManager();
-  // }
-
-  // ---------------------------------------------------------------------------------------------
 }

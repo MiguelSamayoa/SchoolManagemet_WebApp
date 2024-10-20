@@ -1,0 +1,40 @@
+<div *ngIf="isOpen" class="modal modal-open">
+  <div class="modal-box flex flex-col">
+    <h2 class="text-lg font-bold mb-5">Reasignar Estudiantes</h2>
+
+    <!-- Select de grados -->
+    <div class="form-group mb-4">
+      <label for="description">Grado</label>
+      <select name="gravedad" id="gravedad" class="form-control w-full p-1" [(ngModel)]="selectedGradeId">
+        <option *ngFor="let grado of gradosDisponibles" [value]="grado.instanceId">
+          {{grado.grade.gradeName}} {{grado.year}}-{{grado.section}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Tabla de estudiantes -->
+    <div class="form-group">
+      <label for="description">Estudiantes</label>
+      <table class="table table-sm w-11/12 mx-auto">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th class="text-center">Incluir</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of Students; let i = index">
+            <td>{{student.firstName}} {{student.lastName}}</td>
+            <td class="text-center"><input  type="checkbox" [(ngModel)]="estudiantesGraduados[i].active"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="modal-action">
+      <button (click)="closeModal()" class="btn btn-primary">Cerrar</button>
+      <button (click)="create()" class="btn btn-success">Reasignar</button>
+    </div>
+  </div>
+</div>

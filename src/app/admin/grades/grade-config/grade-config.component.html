@@ -1,0 +1,79 @@
+<div class="flex w-full h-full">
+
+  <div class="card rounded-box w-full h-full overflow-auto ">
+
+    <div class="card rounded-box h-full w-[55rem]">
+      <table class="table table-fixed table-xs table-zebra table-pin-rows">
+        <thead>
+          <tr>
+            <th class="bg-primary text-base-100 border rounded-box text-center w-32">
+              Grado
+            </th>
+
+            <!-- Usar ng-container para envolver el *ngFor y *ngIf separados -->
+            <ng-container *ngFor="let curso of CatalogoCursos">
+              <th *ngIf="curso.active" class="bg-primary text-base-100 border rounded-box text-center curso-header w-32">
+                <div class="truncate">{{curso.courseName}}</div>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Usar ng-container para envolver el *ngFor y *ngIf separados -->
+          <ng-container *ngFor="let grade of CatalogoGrados; let i = index">
+            <tr *ngIf="grade.active">
+              <td class="text-center btn btn-ghost sticky right-0 bg-base-100 z-10 w-32">
+                {{grade.gradeName}}
+              </td>
+
+              <ng-container *ngFor="let curso of CatalogoCursos">
+                <td *ngIf="curso.active" class="text-center curso-cell">
+                  <input type="checkbox" class="checkbox checkbox-primary"
+                         [checked]="isTemplateActive(grade.gradeId, curso.courseId)"
+                         (change)="onTemplateChange($event, grade.gradeId, curso.courseId)" />
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+
+  </div>
+
+  <div class="divider divider-horizontal"></div>
+
+  <div class="card  ounded-box h-full w-80">
+
+    <ul class="menu menu-horizontal ml-2 w-full rounded-box p-0">
+      <li (click)="gradeOrCourse = true" class="rounded-t-lg" [ngClass]="gradeOrCourse?'bg-base-300':'bg-base-200'"><a>Grados</a></li>
+      <li (click)="gradeOrCourse = false" class="rounded-t-lg" [ngClass]="!gradeOrCourse?'bg-base-300':'bg-base-200'"><a>Cursos</a></li>
+    </ul>
+    <div *ngIf="gradeOrCourse" class="card bg-base-300 rounded-box w-full p-5 overflow-auto">
+
+      <div class="form-control" *ngFor="let grade of CatalogoGrados; let i = index">
+        <label class="label cursor-pointer rounded-box hover:bg-base-200 px-2 py-2">
+          <span class="label-text"> {{grade.gradeName}} </span>
+          <input type="checkbox" [checked]="grade.active" (click)="toggleGrade(grade.gradeId)" class="checkbox checkbox-primary" />
+        </label>
+      </div>
+
+    </div>
+
+    <div *ngIf="!gradeOrCourse" class="card bg-base-300 rounded-box h-full w-full p-5 overflow-auto">
+
+      <div class="form-control" *ngFor="let course of CatalogoCursos; let i = index">
+        <label class="label cursor-pointer rounded-box hover:bg-base-200 px-2 py-2">
+          <span class="label-text"> {{course.courseName}} </span>
+          <input type="checkbox" [checked]="course.active" (click)="toggleCourse(course.courseId)" class="checkbox checkbox-primary" />
+        </label>
+      </div>
+
+    </div>
+
+    <button class="btn btn-primary w-full rounded-b-lg mt-5" (click)="saveChanges()">Guardar Cambios</button>
+  </div>
+
+</div>

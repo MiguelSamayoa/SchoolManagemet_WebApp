@@ -1,0 +1,97 @@
+
+<div class="absolute inset-0"  *ngIf="isLoading">
+  <div class="flex items-center justify-center h-full z-10">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+</div>
+
+<!-- <dialog id="aprobacionModal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Seguro?</h3>
+    <strong class="py-4">Esta seguro que desea Aprobar las notas? </strong>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn btn-neutral m-2 p-2" (click)="SolicitarAprobacion()">
+          Solicitar Aprobación
+        </button>
+
+        <button  class="btn btn-error text-base-100 m-2 p-2">
+          Cancelar
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 p-0">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog> -->
+
+<div class="flex flex-col w-full h-full">
+
+  <!-- Informacion del alumno -->
+  <div class="flex flex-col h-auto w-full">
+    <div class="card bg-base-300 h-full shadow-xl">
+      <div class="card-body flex flex-row py-3" *ngIf="Curso">
+
+        <div class="flex flex-1 m-2 justify-between align-center">
+          <div>
+            <strong class="mx-5" *ngIf="Curso.course" > {{Curso.course.courseName}}.</strong>
+            <strong class="mx-5"> {{Curso.grade.grade.gradeName}} - {{Curso.grade.year}}-{{Curso.grade.section}}</strong>
+          </div>
+          <strong *ngIf="Curso.teacher" class="mx-5"> {{Curso.teacher.firstName}} {{Curso.teacher.lastName}}</strong>
+          <strong *ngIf="!Curso.teacher" class="mx-5 text-error"> Catedratico No asignado</strong>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <ul class="menu menu-horizontal ml-2 mt-5 w-full rounded-box p-0">
+    <li (click)="tab = 'Alumnos'" class="rounded-t-lg" [ngClass]="tab == 'Alumnos'?'bg-base-300':'bg-base-100'"><a>Notas</a></li>
+  </ul>
+
+  <!-- Alumnos -->
+  <div *ngIf="tab == 'Alumnos'" class="bg-base-300 rounded-box h-auto overflow-x-auto">
+    <div class="card w-full  h-auto shadow-xl">
+      <div class="card-body text-lg flex py-5">
+        <div class="card-title mb-3 w-full justify-around" *ngIf="Curso && ModuleToViewNotes">
+
+          <div class="opacity-25" *ngIf="Curso.modules.indexOf( ModuleToViewNotes ) == 0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+
+          <div *ngIf="Curso.modules.indexOf(ModuleToViewNotes ) !== 0" (click)="prevModulo()" >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+
+          <div>Modulo {{ Curso.modules.indexOf( ModuleToViewNotes ) +1}} - {{ModuleToViewNotes.state.state}} </div>
+
+          <div class="opacity-25" *ngIf="Curso.modules.indexOf( ModuleToViewNotes ) == Curso.modules.length-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+
+          <div *ngIf="Curso.modules.indexOf( ModuleToViewNotes ) < Curso.modules.length-1" (click)="nextModulo()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#09090b" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+        </div>
+        <notas-table
+          [students]="Estudiantes"
+          [module]="ModuleToViewNotes"
+        ></notas-table>
+        <div *ngIf="ModuleToViewNotes.state.stateId == 3" class="w-full flex justify-between mt-5 ">
+          <strong class="badge badge-error mx-5 hover:badge-outline badge-outline p-4 cursor-pointer	" (click)="SendToRevision(false)"> Rechazar </strong>
+          <strong class="badge badge-primary hover:badge-secondary hover:badge-outline badge-outline p-4 cursor-pointer	" (click)="SendToRevision(true)"> Aprobar </strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

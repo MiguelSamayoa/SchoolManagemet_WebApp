@@ -5,8 +5,10 @@ import { User } from '../../../model/User.model';
 import { GradeRepository } from '../../../Services/grade-repository.service';
 import { Router } from '@angular/router';
 import { UserRepository } from '../../../Services/user-repository.service';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { Grade } from '../../../model/Grade.model';
+import { ErrorManagementService } from '../../../Services/error-management.service';
+import { Alert } from '../../../model/Alert';
 
 @Component({
   selector: 'grade-edit',
@@ -32,32 +34,30 @@ export class GradeEditComponent {
     private fb: FormBuilder,
     private gradeRepository:GradeRepository,
     private router:Router,
-    private userRepository:UserRepository
+    private userRepository:UserRepository,
+    private errorManagement:ErrorManagementService
   ) {}
 
+
   ngOnInit(): void {
-
     this.isLoading = true;
-    this.gradeRepository.GetCatalogo()
-    .pipe(finalize(() => this.isLoading = false))
-    .subscribe(
-      response =>{
-        this.CatalogoGrados = response
-        console.log(this.CatalogoGrados);
-      },
-      error => console.error('Error:', error)
-    );
 
-    this.userRepository.getListUser()
-    .pipe(finalize(() => this.isLoading = false))
+    forkJoin({
+      catalogoGrados: this.gradeRepository.GetCatalogo(),
+      teaches: this.userRepository.getListUser()
+    })
+    .pipe(
+      finalize(() => this.isLoading = false)
+    )
     .subscribe(
-      response =>{
-        this.Teaches = response
-        console.log(this.Teaches);
+      ({ catalogoGrados, teaches }) => {
+        this.CatalogoGrados = catalogoGrados;
+        this.Teaches = teaches;
       },
-      error => console.error('Error:', error)
+      error => {
+        this.errorManagement.showAlert(new Alert('error', 'Error al cargar los datos'));
+      }
     );
-
 
     this.userForm = this.fb.group({
       professorGuide: [this.Grade.professor_GuideUserId, [Validators.min(1)]],
@@ -65,8 +65,6 @@ export class GradeEditComponent {
       section: [this.Grade.section, [Validators.required, Validators.minLength(1), Validators.maxLength(1)]],
       gradeId: [this.Grade.gradeId, [Validators.required, Validators.min(1)]],
     });
-
-    this.isLoading = false;
   }
 
   onFileChange(event: any) {
@@ -85,10 +83,12 @@ export class GradeEditComponent {
       this.isLoading = true;
       this.gradeRepository.Update( this.Grade.gradeId, this.userForm.value as InsertGradeDTO )
         .then( response => {
+            this.errorManagement.showAlert( new Alert( 'success','Grado actualizado correctamente') );
             this.isLoading = false;
             this.router.navigateByUrl("/admin/grades")
           })
         .catch( error =>{
+          this.errorManagement.showAlert( new Alert( 'error','Error al actualizar el grado') );
           this.isLoading = false;
         });
       }

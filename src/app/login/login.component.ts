@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { UserRepository } from '../Services/user-repository.service';
+import { ErrorManagementService } from '../Services/error-management.service';
+import { Alert } from '../model/Alert';
 
 @Component({
   selector: 'app-login',
@@ -9,10 +11,10 @@ import { UserRepository } from '../Services/user-repository.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit{
-
+  isLoading = false;
   loginForm!: FormGroup;
 
-  constructor(private userService : UserRepository, private fb: FormBuilder){
+  constructor(private userService : UserRepository, private fb: FormBuilder, private errorManagement: ErrorManagementService) {
   }
 
   ngOnInit(): void {
@@ -26,18 +28,22 @@ export class LoginComponent implements OnInit{
   }
 
   async login() {
-    console.log("Intentando...")
+    this.isLoading = true
     await this.userService.login(this.loginForm.value.email, this.loginForm.value.password)
     .then(data => {
-      console.log("Conexion")
       this.userService.changePage();
     }).catch (error => {
       console.log(error);
+      if(error.status == 401){
+        this.errorManagement.showAlert( new Alert( 'error','Usuario o contraseña incorrectos'));
+      }
+    }).finally(() =>{
+      this.isLoading = false
     })
   }
 
   checkIfIsLogged(){
-    if(this.userService.isLoggedIn()){
+    if( this.userService.isLoggedIn()){
       this.userService.changePage();
     }
   }

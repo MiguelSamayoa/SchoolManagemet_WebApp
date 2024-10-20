@@ -1,0 +1,36 @@
+<table class="table table-xs border-collapse w-full">
+  <thead>
+    <tr>
+      <th class="border"></th>
+      <th class="border px-4 py-2">Estudiante</th>
+      <th *ngFor="let activity of module.activities" class="border px-4 py-2">
+        /{{ activity.maxScore }} - {{ activity.activityName }}
+      </th>
+      <th class="border px-4 py-2">/{{getMax()}} - Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let student of students; let i = index">
+      <td class="border">{{ i +1}}</td>
+
+      <td class="border px-4 py-2">{{ student.firstName }} {{ student.lastName }}</td>
+      <td *ngFor="let activity of module.activities" class="border px-4 py-2">
+        <!-- Campo de texto editable con verificación de nulos -->
+        <input type="number"
+               *ngIf="module.state.stateId == 2"
+               [value]="getStudentScoreForActivity(student.studentActivities || [], activity.activityId) || 0"
+               (blur)="updateScore(student, activity.activityId, $event)"
+               min="0" max="{{ activity.maxScore }}" class="w-full px-2 bg-base-300">
+
+        <ng-container *ngIf="module.state.stateId !== 2"> {{getStudentScoreForActivity(student.studentActivities || [], activity.activityId)|| 0}} </ng-container>
+      </td>
+      <td class="border px-4 py-2">
+        {{ calculateTotalScore(student.studentActivities || []) }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+

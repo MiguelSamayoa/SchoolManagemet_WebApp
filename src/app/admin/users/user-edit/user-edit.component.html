@@ -1,47 +1,54 @@
-
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="bg-base-200 rounded-lg flex flex-col justify-center p-10">
 
   <div class="flex-1">
-    <button>
+    <button (click)="close()">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
       </svg>
-
     </button>
-
     <a class="btn btn-ghost text-xl">Modificar Usuario {{Usuario.firstName}} {{Usuario.lastName}}</a>
   </div>
 
   <div class="w-full mb-2 flex justify-evenly">
-
     <div class="w-5/12">
       <label for="firstName" class="label m-0">Nombre</label>
       <input id="firstName" type="text" formControlName="FirstName" class="input m-0 input-bordered w-full">
+      <!-- Mensajes de error -->
+      <div *ngIf="userForm.controls['FirstName'].invalid && userForm.controls['FirstName'].touched" class="text-red-500 text-sm">
+        <span *ngIf="userForm.controls['FirstName'].hasError('required')">El nombre es requerido.</span>
+        <span *ngIf="userForm.controls['FirstName'].hasError('maxlength')">El nombre no debe exceder los 50 caracteres.</span>
+      </div>
     </div>
 
     <div class="w-5/12">
       <label for="lastName" class="label">Apellido</label>
       <input id="lastName" type="text" formControlName="LastName" class="input input-bordered w-full">
+      <!-- Mensajes de error -->
+      <div *ngIf="userForm.controls['LastName'].invalid && userForm.controls['LastName'].touched" class="text-red-500 text-sm">
+        <span *ngIf="userForm.controls['LastName'].hasError('required')">El apellido es requerido.</span>
+        <span *ngIf="userForm.controls['LastName'].hasError('maxlength')">El apellido no debe exceder los 50 caracteres.</span>
+      </div>
     </div>
-
   </div>
 
   <div class="w-full mb-4 flex justify-evenly">
-
     <div class="w-5/12">
       <label for="email" class="label">Email</label>
       <input id="email" type="email" formControlName="Email" class="input input-bordered w-full">
+      <!-- Mensajes de error -->
+      <div *ngIf="userForm.controls['Email'].invalid && userForm.controls['Email'].touched" class="text-red-500 text-sm">
+        <span *ngIf="userForm.controls['Email'].hasError('required')">El email es requerido.</span>
+        <span *ngIf="userForm.controls['Email'].hasError('email')">Ingrese un email válido.</span>
+      </div>
     </div>
 
     <div class="w-5/12">
       <label for="phone" class="label">Numero Telefonico</label>
       <input id="phone" type="text" formControlName="Phone" class="input input-bordered w-full">
     </div>
-
   </div>
 
   <div class="w-full mb-4 flex justify-evenly">
-
     <div class="w-5/12">
       <label for="address" class="label">Direccion</label>
       <input id="address" type="text" formControlName="Address" class="input input-bordered w-full">
@@ -61,7 +68,6 @@
   </div>
 
   <div class="w-full mb-4 flex justify-evenly">
-
     <div class="w-5/12">
       <label for="gender" class="label">Genero</label>
       <select id="gender" formControlName="Gender" class="select select-bordered w-full">
@@ -69,6 +75,10 @@
         <option value="Hombre">Hombre</option>
         <option value="Mujer">Mujer</option>
       </select>
+      <!-- Mensajes de error -->
+      <div *ngIf="userForm.controls['Gender'].invalid && userForm.controls['Gender'].touched" class="text-red-500 text-sm">
+        <span *ngIf="userForm.controls['Gender'].hasError('required')">Seleccione un género.</span>
+      </div>
     </div>
 
     <div class="w-5/12">
@@ -78,10 +88,14 @@
         <option value="1">Admininstrador</option>
         <option value="2">Catedratico</option>
       </select>
+      <!-- Mensajes de error -->
+      <div *ngIf="userForm.controls['RoleId'].invalid && userForm.controls['RoleId'].touched" class="text-red-500 text-sm">
+        <span *ngIf="userForm.controls['RoleId'].hasError('required')">Seleccione un rol.</span>
+      </div>
     </div>
-
   </div>
-  <div class="justify-end flex w-full ">
+
+  <div class="justify-end flex w-full">
     <button type="submit" class="btn btn-primary w-1/4" [disabled]="userForm.invalid">Submit</button>
   </div>
 

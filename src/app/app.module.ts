@@ -6,14 +6,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 import { LoginComponent } from './login/login.component';
+import { ErrorManagementComponent } from './error-management/error-management.component';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
-    AppComponent
+    AppComponent,
+    ErrorManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -25,8 +28,9 @@ import { LoginComponent } from './login/login.component';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: authorizationInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

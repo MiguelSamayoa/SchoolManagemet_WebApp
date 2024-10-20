@@ -1,0 +1,51 @@
+<div class="navbar shadow bg-base-100">
+  <div class="flex-1">
+    <a class="btn btn-ghost text-xl">Cursos</a>
+  </div>
+</div>
+<table class="table table-zebra">
+  <thead>
+    <tr>
+      <th class="">Curso</th>
+      <th class="">Estado</th>
+      <th class="w-96">Catedratico</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="" *ngFor="let item of cursos; let i = index" >
+      <td (click)="navigateToCourse(item.gradeCourseId)">{{item.course.courseName}}</td>
+
+      <td class="table-cell hidden sm:table-cell" *ngIf="EstadoActual(item)">
+        Modulo {{ EstadoActual(item).index + 1 }} - {{EstadoActual(item).state}}
+      </td>
+
+      <td class="flex w-96 justify-between" *ngIf=" !(reasignTeacher?.courseId == item.gradeCourseId) ">
+        <strong *ngIf="item.teacher" (click)="navigateToUser(item.teacher.userId)">
+          {{item.teacher.firstName}} {{item.teacher.lastName}}
+        </strong>
+        <strong class="text-error" *ngIf="!item.teacher">
+          Sin catedratico Asignado
+        </strong>
+        <div class="badge badge-primary hover:badge-outline hover:cursor-pointer" (click)="Cambiando( item.gradeCourseId)">
+          Cambiar
+        </div>
+      </td>
+
+      <td class="flex w-96 justify-between" *ngIf=" (reasignTeacher?.courseId == item.gradeCourseId) ">
+        <select class="select select-bordered select-sm" [(ngModel)]="reasignTeacher.teacherId">
+          <option *ngFor="let teacher of avaiableTeachers" [value]="teacher.userId">
+            {{teacher.firstName}} {{teacher.lastName}}
+          </option>
+        </select>
+        <div>
+          <div class="badge hover:badge-outline hover:cursor-pointer" (click)="GuardarTeacher()">
+            Guardar
+          </div>
+          <div class="badge badge-error hover:badge-outline hover:cursor-pointer" (click)="cancelando()">
+            Cancelar
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>

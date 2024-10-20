@@ -31,7 +31,8 @@
         </div>
       </div>
 
-      <h2 class="mb-2 ml-5">Catedratico Guia: {{grado?.professor_Guide?.firstName}} {{grado?.professor_Guide?.lastName}} </h2>
+      <h2 class="mb-2 ml-5" *ngIf="grado?.professor_Guide">Catedratico Guia: {{grado.professor_Guide.firstName}} {{grado.professor_Guide.lastName}} </h2>
+      <h2 class="mb-2 ml-5" *ngIf="!grado?.professor_Guide">Catedratico Guia: <strong>No asignado</strong> </h2>
    </div>
   </div>
 
@@ -42,48 +43,10 @@
 
   <div class="mx-auto w-11/12 h-4/6 overflow-auto" *ngIf="cursos && StudentOrCourse">
     <div>
-      <div class="navbar shadow bg-base-100">
-        <div class="flex-1">
-          <a class="btn btn-ghost text-xl">Alumnos</a>
-          <i>{{estudianes.length}} alumnos registrados</i>
-        </div>
-      </div>
-      <table class="table table-zebra">
-        <thead>
-          <tr>
-            <th class="hidden sm:table-cell"></th>
-            <th class="">Alumno</th>
-            <th class="">Email</th>
-            <th class="hidden sm:table-cell">Direccion</th>
-            <th class="hidden md:table-cell text-center">Genero</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of estudianes; let i = index" >
-            <td class="hidden sm:table-cell"> {{i+1}} </td>
-            <td >{{item.firstName}} {{item.lastName}}</td>
-            <td >{{item.email}}</td>
-            <td class="hidden sm:table-cell">{{item.address}}</td>
-            <td class="hidden md:table-cell text-center">{{item.gender}}</td>
-            <!-- <td *ngIf="item.teacher.firstName && item.teacher.lastName" >{{item.teacher.firstName}} {{item.teacher.lastName}}</td> -->
-
-            <!-- <td class="text-center">
-              <div class="badge h-auto text-base-100 p-1"
-              [ngClass]="{
-                'badge-success': item.state.state === 'Aprobado',
-                'badge-error': item.state.state === 'Rechazado',
-                'badge-secondary': item.state.state === 'Pendiente de Revision',
-                'badge-primary': item.state.state === 'Activo',
-                'badge-info': item.state.state === 'Archivado'
-              }">
-              {{item.state.state}}
-              </div>
-
-
-            </td> -->
-          </tr>
-        </tbody>
-      </table>
+      <student-by-grade
+        [students]="estudianes"
+        [canCreate]= "true"
+      ></student-by-grade>
     </div>
 
   </div>
@@ -93,44 +56,9 @@
   </div>
 
   <div class="mx-auto w-11/12 h-4/6 overflow-auto" *ngIf=" cursos && !StudentOrCourse">
-    <div>
-      <div class="navbar shadow bg-base-100">
-        <div class="flex-1">
-          <a class="btn btn-ghost text-xl">Cursos</a>
-        </div>
-      </div>
-      <table class="table table-zebra">
-        <thead>
-          <tr>
-            <th class="">Curso</th>
-            <th class="">Catedratico</th>
-            <th class="text-center">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of cursos; let i = index" >
-            <td (click)="navigateToCourse(item.gradeCourseId)">{{item.course.courseName}}</td>
-            <td (click)="navigateToUser(item.teacher.userId)" *ngIf="item.teacher.firstName && item.teacher.lastName" >{{item.teacher.firstName}} {{item.teacher.lastName}}</td>
-
-            <td class="text-center">
-              <div class="badge h-auto text-base-100 p-1"
-              [ngClass]="{
-                'badge-success': item.state.state === 'Aprobado',
-                'badge-error': item.state.state === 'Rechazado',
-                'badge-secondary': item.state.state === 'Pendiente de Revision',
-                'badge-primary': item.state.state === 'Activo',
-                'badge-info': item.state.state === 'Archivado'
-              }">
-              {{item.state.state}}
-            </div>
-
-
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
+    <course-table
+      [cursos]="cursos"
+    > </course-table>
   </div>
 
   <div class="mx-auto mt-10 h-4/6 overflow-auto" *ngIf="!StudentOrCourse && !cursos">

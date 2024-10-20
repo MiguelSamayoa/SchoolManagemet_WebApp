@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreateUserDTO } from '../../../model/User.model';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { Alert } from '../../../model/Alert';
+import { ErrorManagementService } from '../../../Services/error-management.service';
 
 @Component({
   selector: 'app-user-create',
@@ -15,7 +17,7 @@ export class UserCreateComponent implements OnInit {
 
   isLoading:boolean = false
 
-  constructor(private fb: FormBuilder, private UserRepository:UserRepository, private router:Router) {}
+  constructor(private errorManagement:ErrorManagementService, private fb: FormBuilder, private UserRepository:UserRepository, private router:Router) {}
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
@@ -42,16 +44,20 @@ export class UserCreateComponent implements OnInit {
 
   onSubmit(): void {
     if ( this.userForm.valid ) {
-      console.log( this.userForm.value );
 
       this.isLoading = true;
       this.UserRepository.Create( this.userForm.value as CreateUserDTO )
         .pipe( finalize( () => this.isLoading = false ) )
         .subscribe(
           response =>{
+            this.errorManagement.showAlert( new Alert( 'success','Usuario creado correctamente') );
             this.router.navigateByUrl("/admin/users")
           },
-          error => console.error('Error:', error)
+          error => {
+            console.log(error);
+            if(error.error == 'El Email ya existe') this.errorManagement.showAlert( new Alert( 'warning','El Email ya existe'));
+            else this.errorManagement.showAlert( new Alert( 'error','Error al crear el usuario'));
+          }
         );
       }
   }

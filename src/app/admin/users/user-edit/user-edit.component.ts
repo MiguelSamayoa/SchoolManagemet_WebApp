@@ -4,6 +4,8 @@ import { UserRepository } from '../../../Services/user-repository.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UpdateUser, User } from '../../../model/User.model';
 import { finalize } from 'rxjs';
+import { ErrorManagementService } from '../../../Services/error-management.service';
+import { Alert } from '../../../model/Alert';
 
 @Component({
   selector: 'user-edit',
@@ -21,7 +23,7 @@ export class UserEditComponent {
 
   imgURL: any;
 
-  constructor(private fb: FormBuilder, private userRepository:UserRepository, private router:Router) {}
+  constructor(private errorManagement:ErrorManagementService, private fb: FormBuilder, private userRepository:UserRepository, private router:Router) {}
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
@@ -56,14 +58,20 @@ export class UserEditComponent {
     }
   }
 
+  close(){
+    this.updatingEmitter.emit();
+  }
+
   onSubmit(): void {
     if ( this.userForm.valid ) {
       this.loadingEmitter.emit();
 
       this.userRepository.UpdateUser( this.Usuario.userId, this.userForm.value as UpdateUser ).subscribe(response =>{
+            this.errorManagement.showAlert( new Alert( 'success','Datos cargados correctamente') );
             this.updatingEmitter.emit();
           },
           error => {
+            this.errorManagement.showAlert( new Alert( 'error','Error al actualizar el usuario'));
             this.loadingEmitter.emit();
           }
         );

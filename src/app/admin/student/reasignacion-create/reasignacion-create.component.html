@@ -1,0 +1,17 @@
+<!-- Modal -->
+<div *ngIf="isOpen" class="modal modal-open">
+  <div class="modal-box flex flex-col">
+    <h2 class="text-lg font-bold mb-5">Crear registro disciplinario</h2>
+      <div class="form-group">
+
+        <label for="description">Grado</label>
+        <select name="gravedad" id="gravedad" class="form-control w-full p-1" [(ngModel)]="selectedGradeId">
+          <option *ngFor="let grado of gradosDisponibles" [value]="grado.instanceId">{{grado.grade.gradeName}} {{grado.year}}-{{grado.section}}</option>
+        </select>
+      </div>
+    <div class="modal-action">
+      <button (click)="closeModal()" class="btn btn-primary">Cerrar</button>
+      <button (click)="create()" class="btn btn-success">Reasignar</button>
+    </div>
+  </div>
+</div>

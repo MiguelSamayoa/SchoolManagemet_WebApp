@@ -1,0 +1,33 @@
+<div class="boleta-container">
+  <h1 class="text-4xl mt-10">CENTRO EDUCATIVO CAMPUS SUR</h1>
+  <h2 class="text-4xl">Boleta de Evaluación</h2>
+  <p class="text-xl my-20"><strong>Nombre del Alumno:</strong> {{Student.lastName}}, {{Student.firstName}} </p>
+
+  <table class="text-lg my-5">
+    <thead>
+      <tr>
+        <th rowspan="2" class="table-header">Curso</th>
+        <th [attr.colspan]="(Cursos[0]?.modules?.length || 0) + 1" class="table-header">
+          Módulos/Unidades Evaluadas
+        </th>
+      </tr>
+      <tr *ngIf="Cursos">
+        <th class="text-center" *ngFor="let curso of Cursos[0].modules; let i = index"> Unidad {{i+1}} </th>
+        <th>Promedio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container>
+        <tr *ngFor="let curso of Cursos" class="m-2">
+          <td class="text-center">{{ curso.course.courseName }}</td>
+          <td class="text-center" *ngFor="let item of curso.modules" > {{getTotalScore(item)}} </td>
+          <td class="text-center"> <strong> {{getTotalByCourse(curso)}} </strong> </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <p class="my-20 text-xl "><strong>Promedio General:</strong> {{getTotalGeneral()}}</p>
+  <p class="my-20 text-xl "><strong>Firma del Director:</strong> ________________________</p>
+  <p class="my-20 text-xl "><strong>Firma del Padre de Familia:</strong> ________________________</p>
+</div>

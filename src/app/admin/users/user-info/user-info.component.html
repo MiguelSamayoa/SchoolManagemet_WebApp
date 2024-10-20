@@ -48,7 +48,8 @@
 
       <h2 class="mb-2 ml-5">Direccion: {{usuario.address}} </h2>
 
-      <h2 class="mb-2 ml-5">Rol: {{usuario.role?.roleName}} </h2>
+      <h2 class="mb-2 ml-5" *ngIf="usuario?.role">Rol: {{usuario.role.roleName}} </h2>
+      <h2 class="mb-2 ml-5" *ngIf="!usuario?.role">Rol: No asignado </h2>
 
     </div>
   </div>
@@ -59,35 +60,19 @@
         <a class="btn btn-ghost text-xl">Cursos</a>
       </div>
     </div>
-    <table class="table table-zebra">
+    <table class="table table-pin-rows table-zebra">
       <thead>
         <tr>
           <th class="">Curso</th>
           <th class="">Grado</th>
           <th class="">Seccion</th>
-          <th class="text-center">Estado</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of cursos; let i = index" >
-          <td class="">{{item.course.courseName}}</td>
-          <td (click)="navigateToGrade(item.grade.instanceId)">{{item.grade.grade?.gradeName}}</td>
+          <td (click)="navigateToCourse(item.course.courseId)"class="">{{item.course.courseName}}</td>
+          <td (click)="navigateToGrade(item.grade.instanceId)">{{item.grade.grade.gradeName}}</td>
           <td class="">{{item.grade.year}}-{{item.grade.section}}</td>
-
-          <td class="text-center">
-            <div class="badge h-auto text-base-100 p-1"
-            [ngClass]="{
-              'badge-success': item.state.state === 'Aprobado',
-              'badge-error': item.state.state === 'Rechazado',
-              'badge-secondary': item.state.state === 'Pendiente de Revision',
-              'badge-primary': item.state.state === 'Activo',
-              'badge-info': item.state.state === 'Archivado'
-            }">
-            {{item.state.state}}
-          </div>
-
-
-          </td>
         </tr>
       </tbody>
     </table>

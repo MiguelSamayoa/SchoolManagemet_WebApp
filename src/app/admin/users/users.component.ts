@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserRepository } from '../../Services/user-repository.service';
 import { User } from '../../model/User.model';
 import { finalize } from 'rxjs';
+import { ErrorManagementService } from '../../Services/error-management.service';
+import { Alert } from '../../model/Alert';
 
 @Component({
   selector: 'app-users',
@@ -18,11 +20,7 @@ export class UsersComponent implements OnInit {
 
   usuarios: User[] = [];
 
-  StudentStat:number = 0;
-  AdminStat!:number;
-  TeacherStat!:number;
-
-  constructor(private userRepository: UserRepository, private router:Router) {}
+  constructor(private errorManagement: ErrorManagementService, private userRepository: UserRepository, private router:Router) {}
 
   async ngOnInit() {
     await this.CargarData();
@@ -35,12 +33,10 @@ export class UsersComponent implements OnInit {
       .subscribe(
         response =>{
           this.usuarios = response
-
-          this.AdminStat = this.usuarios.filter(x => x.role.roleId == 1).length;
-          this.TeacherStat = this.usuarios.filter(x => x.role.roleId == 2).length;
-
         },
-        error => console.error('Error:', error)
+        error => {
+          this.errorManagement.showAlert( new Alert( 'error','Error al cargar los usuarios'));
+        }
       );
   }
 
@@ -59,9 +55,12 @@ export class UsersComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe(
         response =>{
+          this.errorManagement.showAlert( new Alert( 'success','Datos eliminados correctamente') );
           this.CargarData()
         },
-        error => console.error('Error:', error)
+        error => {
+          this.errorManagement.showAlert( new Alert( 'error', 'Error al eliminar el usuario'));
+        }
       );
   }
 }

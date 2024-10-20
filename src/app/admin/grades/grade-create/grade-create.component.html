@@ -1,45 +1,73 @@
 <!-- user-form.component.html -->
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="mx-5 md:mx-20 p-4 bg-base-200 rounded-lg flex flex-wrap justify-center">
 
+  <!-- Campo Catedrático Guía -->
   <div class="mb-4 mx-5 w-3/4 md:w-1/3">
-    <label for="professorGuide" class="label">Catedratico Guia</label>
+    <label for="professorGuide" class="label">Catedrático Guía</label>
     <select id="professorGuide" formControlName="professorGuide" class="select select-bordered w-full">
-      <option value="" >Seleccion un Catedratico</option>
-
-      <option *ngFor="let user of Teaches ; let i = index" [value]="user.userId" >{{user.firstName}} {{user.lastName}}</option>
-
+      <option value="">Seleccione un Catedrático</option>
+      <option *ngFor="let user of Teaches; let i = index" [value]="user.userId">{{ user.firstName }} {{ user.lastName }}</option>
     </select>
+    <div *ngIf="userForm.get('professorGuide')?.invalid && userForm.get('professorGuide')?.touched" class="text-error">
+      Seleccione un catedrático.
+    </div>
   </div>
 
+  <!-- Campo Año -->
   <div class="mb-4 mx-5 w-3/4 md:w-1/3">
     <label for="year" class="label">Año</label>
     <select id="year" formControlName="year" class="select select-bordered w-full">
-      <option [value]="thisYear-1" >{{thisYear-1}}</option>
-      <option [value]="thisYear" >{{thisYear}}</option>
-      <option [value]="thisYear+1" >{{thisYear+1}}</option>
-
+      <option [value]="thisYear-1">{{ thisYear-1 }}</option>
+      <option [value]="thisYear">{{ thisYear }}</option>
+      <option [value]="thisYear+1">{{ thisYear+1 }}</option>
     </select>
+    <div *ngIf="userForm.get('year')?.invalid && userForm.get('year')?.touched" class="text-error">
+      Seleccione un año válido.
+    </div>
   </div>
 
+  <!-- Campo Grado -->
   <div class="mb-4 mx-5 w-3/4 md:w-1/3">
     <label for="gradeId" class="label">Grado</label>
     <select id="gradeId" formControlName="gradeId" class="select select-bordered w-full">
-      <option value="" disabled>Selecciona el grado</option>
-
-      <option *ngFor="let grade of CatalogoGrados; let i = index" [value]="grade.gradeId">{{grade.gradeName}}</option>
+      <option value="" disabled>Seleccione el grado</option>
+      <ng-container *ngFor="let grade of CatalogoGrados; let i = index">
+        <option *ngIf="grade.active" [value]="grade.gradeId">{{ grade.gradeName }}</option>
+      </ng-container>
     </select>
+    <div *ngIf="userForm.get('gradeId')?.invalid && userForm.get('gradeId')?.touched" class="text-error">
+      Seleccione un grado válido.
+    </div>
   </div>
 
+  <!-- Campo Sección -->
   <div class="mb-4 mx-5 w-3/4 md:w-1/3">
-    <label for="section" class="label">Seccion</label>
+    <label for="section" class="label">Sección</label>
     <select id="section" formControlName="section" class="select select-bordered w-full">
-      <option *ngFor="let section of Seccion; let i = index" [value]="section" >{{section}}</option>
-
+      <option *ngFor="let section of Seccion; let i = index" [value]="section">{{ section }}</option>
     </select>
+    <div *ngIf="userForm.get('section')?.invalid && userForm.get('section')?.touched" class="text-error">
+      Seleccione una sección válida.
+    </div>
   </div>
 
-  <div class="justify-end flex mt-10 w-full">
-    <button type="submit" class="btn btn-primary w-1/4" [disabled]="userForm.invalid">Submit</button>
+  <!-- Campo Ciclo Académico -->
+  <div class="mb-4 mx-5 w-3/4 md:w-1/3">
+    <label for="academicCicle" class="label">Ciclo</label>
+    <select id="academicCicle" formControlName="academicCicle" class="select select-bordered w-full">
+      <option value="Trimestre">Trimestre</option>
+      <option value="Bimestre">Bimestre</option>
+      <option value="Semestre">Semestre</option>
+    </select>
+    <div *ngIf="userForm.get('academicCicle')?.invalid && userForm.get('academicCicle')?.touched" class="text-error">
+      Seleccione un ciclo académico.
+    </div>
   </div>
+
+  <!-- Botón de Enviar -->
+  <div class="justify-end flex mt-10 w-full">
+    <button type="submit" class="btn btn-primary w-1/4 mx-5" [disabled]="userForm.invalid">Crear</button>
+  </div>
+
 
 </form>

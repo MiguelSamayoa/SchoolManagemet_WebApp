@@ -1,0 +1,72 @@
+<!-- Modal -->
+<div *ngIf="isOpen" class="modal modal-open">
+  <div class="modal-box flex flex-col">
+    <h2 class="text-lg font-bold mb-5">Crear Registro de Estudiante</h2>
+
+    <form [formGroup]="studentForm" class="w-96 m-auto">
+      <div class="form-group mb-3">
+        <label for="firstName">Nombre</label>
+        <input formControlName="firstName" id="firstName" type="text" class="form-control w-full" required>
+        <div *ngIf="studentForm.get('firstName')?.invalid && studentForm.get('firstName')?.touched" class="text-red-500">
+          El nombre es requerido.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="lastName">Apellido</label>
+        <input formControlName="lastName" id="lastName" type="text" class="form-control w-full" required>
+        <div *ngIf="studentForm.get('lastName')?.invalid && studentForm.get('lastName')?.touched" class="text-red-500">
+          El apellido es requerido.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="dateOfBirth">Fecha de Nacimiento</label>
+        <input formControlName="dateOfBirth" id="dateOfBirth" type="date" class="form-control w-full" required>
+        <div *ngIf="studentForm.get('dateOfBirth')?.invalid && studentForm.get('dateOfBirth')?.touched" class="text-red-500">
+          La fecha de nacimiento es requerida.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="email">Correo Electrónico</label>
+        <input formControlName="email" id="email" type="email" class="form-control w-full" required>
+        <div *ngIf="studentForm.get('email')?.invalid && studentForm.get('email')?.touched" class="text-red-500">
+          El correo es requerido y debe ser válido.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="phone">Teléfono</label>
+        <input formControlName="phone" id="phone" type="tel" class="form-control w-full" placeholder="1234-5678" required>
+        <div *ngIf="studentForm.get('phone')?.invalid && studentForm.get('phone')?.touched" class="text-red-500">
+          El teléfono debe tener el formato correcto.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="gender">Género</label>
+        <select formControlName="gender" id="gender" class="form-control w-full" required>
+          <option value="Hombre">Hombre</option>
+          <option value="Mujer">Mujer</option>
+        </select>
+        <div *ngIf="studentForm.get('gender')?.invalid && studentForm.get('gender')?.touched" class="text-red-500">
+          El género es requerido.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="address">Dirección</label>
+        <input formControlName="address" id="address" type="text" class="form-control w-full" required>
+        <div *ngIf="studentForm.get('address')?.invalid && studentForm.get('address')?.touched" class="text-red-500">
+          La dirección es requerida.
+        </div>
+      </div>
+    </form>
+
+    <div class="modal-action m">
+      <button (click)="closeModal()" class="btn btn-error">Cancelar</button>
+      <button (click)="SendInfo()" class="btn btn-success" [disabled]="studentForm.invalid"> {{isCreate? "Crear": "Actualizar"}} </button>
+    </div>
+  </div>
+</div>

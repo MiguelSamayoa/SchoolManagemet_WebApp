@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GradeRepository } from '../../../Services/grade-repository.service';
 import { Grade } from '../../../model/Grade.model';
 import { Course } from '../../../model/Course.model';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 import { Student } from '../../../model/Student.model';
 import { StudentRepository } from '../../../Services/student-repository.service';
 
@@ -53,27 +53,21 @@ export class GradeInfoComponent {
 
   async CargarData() {
     this.isLoading = true;
-    this.studentRepository.getListByGrade( this.gradeId )
-    .subscribe(
-      response =>{
-        this.estudianes = response
-        console.log(response);
-      },
-      error => console.error('Error:', error)
-    );
 
-    this.gradeRepository.getById( this.gradeId )
-      .then(
-        response =>{
-          if(!response) return;
-          console.log( "El Grado es: ", response);
-          this.grado = response.grade;
-          this.cursos = response.courses;
-        }).catch( error => {
-          console.error('Error:', error)
-        }).finally( () => this.isLoading = false );
+    forkJoin({
+      studentsByGrade: this.studentRepository.getListByGrade( this.gradeId ),
+      gradoInfo: this.gradeRepository.getById( this.gradeId )
+    }).pipe(
+      finalize(() => this.isLoading = false)
+    ).subscribe(( {studentsByGrade, gradoInfo} ) => {
 
+      if(studentsByGrade) this.estudianes = studentsByGrade;
 
+      if(!gradoInfo) return;
+      this.grado = gradoInfo.grade;
+      this.cursos = gradoInfo.courses;
+      console.log(this.cursos);
+    }, error => console.error('Error:', error));
   }
 
   Actualizar(){
@@ -82,16 +76,16 @@ export class GradeInfoComponent {
   }
 
   navigateToUser(id: number) {
-    console.log("navegando a usuario: ", id);
     this.router.navigateByUrl(`/admin/users/info?id=${id}`);
   }
-  navigateToCourse(id: number){
-    console.log("navegando a curso: ", id);
-  }
 
+  navigateToStudent(id: number) {
+    this.router.navigateByUrl(`/admin/student/info?id=${id}`);
+  }
   setStudentOrCourse( value: boolean ){
     this.StudentOrCourse = value;
-
   }
+
+
 }
 

@@ -1,0 +1,333 @@
+
+<div class="absolute inset-0"  *ngIf="isLoading">
+  <div class="flex items-center justify-center h-full z-10">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+</div>
+
+<div class="flex flex-col w-full h-full">
+
+  <!-- Informacion del alumno -->
+  <div class="flex flex-col h-auto w-full" *ngIf="!isUpdating">
+    <div class="card bg-base-300 h-full shadow-xl">
+      <div class="card-body text-sm flex flex-row py-3" *ngIf="student">
+
+        <div class="flex flex-col flex-1 m-2 ">
+          <div class="mb-1"><strong>Alumno:</strong> {{student.firstName}} {{student.lastName}}</div>
+          <div class="mb-1"><strong>Correo:</strong> {{student.email}} </div>
+          <div class="mb-1"><strong>Tel:</strong> {{student.phone}} </div>
+
+        </div>
+
+
+        <div class="flex flex-col flex-1 m-2">
+          <div class="mb-1"><strong>Direccion:</strong> {{student.address}} </div>
+
+          <div class="mb-1"><strong>Cumpleaños:</strong> {{student.dateOfBirth| date:'dd/MMM'}} </div>
+
+          <div class="mb-1"><strong>Genero:</strong> {{student.gender}} </div>
+        </div>
+
+        <div class="card-actions justify-end">
+          <button class="btn btn-success" (click)="openStudentEdit()">
+            Editar
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <student-formulario
+    [isOpen]="EditStudentModal"
+    [student]="student"
+    [isCreate]="false"
+    (modalClose)="handleStudentEditClose()"
+    (SendStudent)="handleStudentEdit($event)">
+  </student-formulario>
+
+  <!-- Menu -->
+  <ul class="menu menu-horizontal ml-2 mt-5 w-full rounded-box p-0">
+    <li (click)="tab = 'notas'" class="rounded-t-lg" [ngClass]="tab == 'notas'?'bg-base-300':'bg-base-100'"><a>Notas</a></li>
+    <li (click)="tab = 'pagos'" class="rounded-t-lg" [ngClass]="tab == 'pagos'?'bg-base-300':'bg-base-100'"><a>Pagos</a></li>
+    <li (click)="tab = 'med'" class="rounded-t-lg" [ngClass]="tab == 'med'?'bg-base-300':'bg-base-100'"><a>Informacion Medica</a></li>
+    <li (click)="tab = 'registroDiciplinario'" class="rounded-t-lg" [ngClass]="tab == 'registroDiciplinario'?'bg-base-300':'bg-base-100'"><a>Registro diciplinario</a></li>
+    <li (click)="tab = 'emergenciContact'" class="rounded-t-lg" [ngClass]="tab == 'emergenciContact'?'bg-base-300':'bg-base-100'"><a>Contactos de Emergencia</a></li>
+  </ul>
+
+  <div *ngIf="tab == 'notas'" class="bg-base-300 rounded-box h-full" >
+    <div class="card w-full h-full shadow-xl">
+      <div class="card-body text-lg flex py-5">
+        <div class="card-title mb-3 w-full justify-between">
+          <div> <strong>{{gradoActual?.grade?.gradeName}}</strong> {{gradoActual?.year}}-{{gradoActual.section}} </div>
+          <div class="badge badge-primary badge-outline p-3 cursor-pointer hover:badge-outline hover:badge-secondary" (click)="exportToPDF()">Exportar a PDF</div>
+        </div>
+
+        <table class="table table-sm table-zebra overflow-x-auto table-pin-rows">
+          <thead>
+            <tr *ngIf="Notas">
+              <th class="text-center"> Cursos </th>
+              <th class="text-center" *ngFor="let curso of Notas()[0].modules; let i = index"> Modulo {{i+1}} </th>
+              <th>Promedio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container>
+              <tr *ngFor="let curso of Notas()">
+                <td class="text-center">{{ curso.course.courseName }}</td>
+                <td class="text-center" *ngFor="let item of curso.modules" > {{getTotalScore(item)}} /{{getMaxScore(item)}} </td>
+                <td class="text-center"> {{getTotalByCourse(curso)}} </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+
+        <div class="flex justify-between items-center mt-5">
+          <div class="opacity-25" *ngIf="Grados.indexOf( gradoActual ) == Grados.length-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <div *ngIf="Grados.indexOf( gradoActual ) < Grados.length-1" (click)="nextCourse()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 9-3 3m0 0 3 3m-3-3h7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+
+          <div class="opacity-25" *ngIf="Grados.indexOf( gradoActual ) == 0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+          <div *ngIf="Grados.indexOf( gradoActual ) !== 0" (click)="prevCourse()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#09090b" class="size-9">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<boleta-evaluacion
+  id="notasTable"
+  *ngIf="Imprimiendo"
+  [Cursos]="Notas()"
+  [Student]="student">
+</boleta-evaluacion>
+
+
+  <!-- Pagos -->
+  <div *ngIf="tab == 'pagos'" class="bg-base-300 rounded-box h-full">
+    <div class="card w-full h-full shadow-xl">
+      <div class="card-body text-lg flex py-5">
+        <div class="card-title mb-3 w-full justify-between">
+          <div>Registro de Pagos</div>
+          <button class="btn btn-success" (click)="openPaymentModal()">Agregar</button>
+        </div>
+
+        <payment-create
+          [isOpen]="CreatePaymentModal"
+          (modalClose)="handlePaymentModalClose()"
+          (Created)="handlePaymentCreated($event)">
+        </payment-create>
+
+        <table class="table table-sm table-zebra overflow-x-auto table-pin-rows">
+          <thead>
+            <tr>
+              <th class="text-center">Fecha</th>
+              <th class="text-center">Concepto</th>
+              <th class="text-center">Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="student.payments.length > 0">
+              <tr *ngFor="let payment of student.payments">
+                <td class="text-center">{{ payment.paymentDate | date:'dd/MM/yyyy - HH:mm' }}</td>
+                <td class="text-center">{{payment.description}}</td>
+                <td class="text-end"> <strong>Q</strong> <strong>{{payment.amount}}</strong></td>
+              </tr>
+            </ng-container>
+
+            <tr *ngIf="student.payments.length == 0">
+              <td></td>
+              <td class="text-center" >No hay pagos registrados</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informacion Medica -->
+  <div *ngIf="tab == 'med'" class="bg-base-300 rounded-box h-full">
+    <div class="card w-full h-full shadow-xl">
+      <div class="card-body text-lg flex py-5">
+        <div class="card-title mb-3 w-full justify-between">
+          <div>Registros Medicos</div>
+          <button class="btn btn-success" (click)="openMedicalInfoModal()">Agregar</button>
+        </div>
+
+        <info-medica-create
+          [isOpen]="CreateMedicalInfoModal"
+          (modalClose)="handleMedicalInfoModalClose()"
+          (Created)="handleMedicalInfoCreated($event)">
+        </info-medica-create>
+
+        <table class="table table-sm table-zebra overflow-x-auto table-pin-rows">
+          <thead>
+            <tr>
+              <th class="text-center">Tipo de afeccion</th>
+              <th class="text-center">Detalle</th>
+              <th class="text-center w-20"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="student.medicalInfos.length > 0">
+              <tr *ngFor="let medicalInfo of student.medicalInfos">
+                <td class="text-center">{{ medicalInfo.medicalInfoType.typeName }}</td>
+                <td class="text-center">{{medicalInfo.detail}}</td>
+                <td class="flex flex-row justify-evenly w-20">
+                  <button class="btn btn-error text-base-100 p-2" onclick="modal_delete.showModal()" (click)="medicalInfoToDelete = medicalInfo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 p-0 m-0">
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+
+            <tr *ngIf="student.medicalInfos.length == 0">
+              <td></td>
+              <td class="text-center" >No hay Informacion Medica registrada</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registro Diciplinario -->
+  <div *ngIf="tab == 'registroDiciplinario'" class="bg-base-300 rounded-box h-full">
+    <div class="card w-full h-full shadow-xl">
+      <div class="card-body text-lg flex py-5">
+        <div class="card-title mb-3 w-full justify-between">
+          <div>Registro diciplinario</div>
+          <button class="btn btn-success" (click)="openRecordModal()">Agregar</button>
+        </div>
+
+        <discipline-record-create
+          [isOpen]="CreateDisciplineRecordModal"
+          (modalClose)="handleRecordModalClose()"
+          (Created)="handleRecordCreated($event)">
+        </discipline-record-create>
+
+        <table class="table table-sm table-zebra overflow-x-auto table-pin-rows">
+          <thead>
+            <tr>
+              <th class="text-center">Fecha del incidente</th>
+              <th class="text-center">Descripcion</th>
+              <th class="text-center">Accion Tomada</th>
+              <th class="text-center">Gravedad</th>
+              <th class="text-center w-20"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="student.disciplineRecords.length > 0">
+              <tr *ngFor="let record of student.disciplineRecords">
+                <td class="text-center">{{ record.incidentDate | date:'dd/MM/yyyy - HH:mm' }}</td>
+                <td class="text-center">{{ record.incidentDescription }}</td>
+                <td class="text-center">{{record.actionTaken}}</td>
+                <td class="text-center">
+                  <div class="badge text-base-100 p-3"
+                  [ngClass]="{
+                    'badge-success': record.severity === 'Leve',
+                    'badge-warning': record.severity === 'Moderada',
+                    'badge-error': record.severity === 'Grave',
+                  }">
+                  <strong> {{ record.severity }} </strong>
+                </div>
+
+                </td>
+                <td class="flex flex-row justify-evenly w-20">
+                  <button class="btn btn-error text-base-100 p-2" onclick="modal_delete.showModal()" (click)="recordToDelete = record">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 p-0 m-0">
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+
+            <tr *ngIf="student.disciplineRecords.length == 0">
+              <td></td>
+              <td class="text-center" >No hay Incidencias registradas</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contacos de Emergencia -->
+  <div *ngIf="tab == 'emergenciContact'" class="bg-base-300 rounded-box h-full">
+    <div class="card w-full h-full shadow-xl">
+      <div class="card-body text-lg flex py-5">
+        <div class="card-title mb-3 w-full justify-between">
+          <div>Contactos de Emergencia</div>
+          <button class="btn btn-success" (click)="openContactModal()">Agregar</button>
+        </div>
+
+        <emergency-contact-create
+          [isOpen]="CreateEmergencyContactModal"
+          (modalClose)="handleContactModalClose()"
+          (Created)="handleContactCreated($event)">
+        </emergency-contact-create>
+
+        <table class="table table-sm table-zebra overflow-x-auto table-pin-rows">
+          <thead>
+            <tr>
+              <th class="text-center">Nombre</th>
+              <th class="text-center">Relacion</th>
+              <th class="text-center">Direccion</th>
+              <th class="text-center">Numero Telefonico</th>
+              <th class="text-center w-20"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="student.emergencyContacts.length > 0">
+              <tr *ngFor="let EmergencyContact of student.emergencyContacts">
+                <td class="text-center">{{ EmergencyContact.contactName }}</td>
+                <td class="text-center">{{ EmergencyContact.relationship }}</td>
+                <td class="text-center">{{ EmergencyContact.address }}</td>
+                <td class="text-center">{{ EmergencyContact.phone }}</td>
+
+                <td class="flex flex-row justify-evenly w-20">
+                  <button class="btn btn-error text-base-100 p-2" onclick="modal_delete.showModal()" (click)="EmergencyContactToDelete = EmergencyContact">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 p-0 m-0">
+                      <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+
+            <tr *ngIf="student.emergencyContacts.length == 0">
+              <td></td>
+              <td class="text-center" >No hay Contactos de Emergencia registrados</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

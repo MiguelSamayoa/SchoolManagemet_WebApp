@@ -1,0 +1,44 @@
+<!-- Modal -->
+<div *ngIf="isOpen" class="modal modal-open">
+  <div class="modal-box flex flex-col">
+    <h2 class="text-lg font-bold mb-5">{{ isCreate ? 'Crear Registro de Actividad' : 'Editar Registro de Actividad' }}</h2>
+
+    <form [formGroup]="Form" class="w-96 m-auto">
+      <div class="form-group mb-3">
+        <label for="activityName">Nombre</label>
+        <input formControlName="activityName" id="activityName" type="text" class="form-control w-full" required>
+        <div *ngIf="Form.get('activityName')?.invalid && Form.get('activityName')?.touched" class="text-red-500">
+          El nombre es requerido.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="description">Descripción</label>
+        <textarea formControlName="description" id="description" class="form-control w-full"></textarea>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="maxScore">Punteo</label>
+        <input formControlName="maxScore" id="maxScore" type="number" class="form-control w-full" required>
+        <div *ngIf="Form.get('maxScore')?.invalid && Form.get('maxScore')?.touched" class="text-red-500">
+          El punteo máximo es requerido.
+        </div>
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="deadline">Fecha de Entrega</label>
+        <input formControlName="deadline" id="deadline" type="date" class="form-control w-full" required>
+        <div *ngIf="Form.get('deadline')?.invalid && Form.get('deadline')?.touched" class="text-red-500">
+          La fecha de entrega es requerida.
+        </div>
+      </div>
+    </form>
+
+    <div class="modal-action">
+      <button (click)="closeModal()" class="btn btn-error">Cancelar</button>
+      <button (click)="create()" class="btn btn-success" [disabled]="Form.invalid">
+        {{ isCreate ? "Crear" : "Actualizar" }}
+      </button>
+    </div>
+  </div>
+</div>

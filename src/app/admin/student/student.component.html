@@ -1,0 +1,57 @@
+<div class="absolute inset-0"  *ngIf="isLoading">
+  <div class="flex items-center justify-center h-full z-10">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+</div>
+
+<div  class="h-full overflow-auto">
+
+  <ng-container *ngIf="gradosActivos()">
+
+    <div *ngFor="let item of gradosActivos(); let i = index" class="collapse collapse-arrow bg-base-300 my-7">
+      <input type="checkbox" id="toggle1" class="peer"/>
+      <div for="toggle1" class="collapse-title text-xl font-medium flex justify-between h-16">
+        <label class=""> <strong> Grado: </strong>{{item.gradeName}} {{item.year}}-{{item.section}} </label>
+        <label class="w-1/4 text-base"> <strong> Catedratico: </strong>{{item.teacherName}}</label>
+      </div>
+      <div class="collapse-content">
+
+        <student-by-grade
+          [students]="item.students"
+          [gradeId]="item.gradeId"
+          [canCreate]= "true"
+          [viewUnactives]= "true"
+          [canReassign] = "true"
+          [canReassignAll]="true"
+          (needReload)="CargarData()"
+        ></student-by-grade>
+
+      </div>
+    </div>
+
+  </ng-container>
+  
+  <ng-container *ngIf="gradosInactivos().length > 0">
+    <div class="divider divider-neutral text-xl my-5"> Grados Inactivos </div>
+
+    <div *ngFor="let item of gradosInactivos(); let i = index" class="collapse collapse-arrow bg-base-300 my-7">
+      <input type="checkbox" id="toggle1" class="peer"/>
+      <div for="toggle1" class="collapse-title text-xl font-medium flex justify-between	h-16">
+        <label class=""> <strong> Grado: </strong>{{item.gradeName}} {{item.year}}-{{item.section}} </label>
+        <label class="w-1/4 text-base"> <strong> Catedratico: </strong>{{item.teacherName}} </label>
+      </div>
+      <div class="collapse-content">
+
+        <student-by-grade
+          [students]="item.students"
+          [canCreate]= "false"
+          [canReassign] = "true"
+          [viewUnactives]= "true"
+          (needReload)="CargarData()"
+        ></student-by-grade>
+
+      </div>
+    </div>
+  </ng-container>
+
+</div>

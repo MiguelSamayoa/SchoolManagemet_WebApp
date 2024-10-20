@@ -1,60 +1,92 @@
-<!-- user-form.component.html -->
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="mx-20 p-4 bg-base-200 rounded-lg flex flex-wrap justify-center">
+
+  <!-- Nombre -->
   <div class="mb-4 mx-5 w-1/3">
     <label for="firstName" class="label">Nombre</label>
     <input id="firstName" type="text" formControlName="FirstName" class="input input-bordered w-full">
+    <div *ngIf="userForm.get('FirstName')?.invalid && (userForm.get('FirstName')?.dirty || userForm.get('FirstName')?.touched)" class="text-red-500 text-sm mt-1">
+      <span *ngIf="userForm.get('FirstName')?.errors?.['required']">El nombre es requerido.</span>
+      <span *ngIf="userForm.get('FirstName')?.errors?.['maxlength']">El nombre no puede exceder los 50 caracteres.</span>
+    </div>
   </div>
 
+  <!-- Apellido -->
   <div class="mb-4 mx-5 w-1/3">
     <label for="lastName" class="label">Apellido</label>
     <input id="lastName" type="text" formControlName="LastName" class="input input-bordered w-full">
+    <div *ngIf="userForm.get('LastName')?.invalid && (userForm.get('LastName')?.dirty || userForm.get('LastName')?.touched)" class="text-red-500 text-sm mt-1">
+      <span *ngIf="userForm.get('LastName')?.errors?.['required']">El apellido es requerido.</span>
+      <span *ngIf="userForm.get('LastName')?.errors?.['maxlength']">El apellido no puede exceder los 50 caracteres.</span>
+    </div>
   </div>
 
+  <!-- Email -->
   <div class="mb-4 mx-5 w-1/3">
     <label for="email" class="label">Email</label>
     <input id="email" type="email" formControlName="Email" class="input input-bordered w-full">
+    <div *ngIf="userForm.get('Email')?.invalid && (userForm.get('Email')?.dirty || userForm.get('Email')?.touched)" class="text-red-500 text-sm mt-1">
+      <span *ngIf="userForm.get('Email')?.errors?.['required']">El email es requerido.</span>
+      <span *ngIf="userForm.get('Email')?.errors?.['email']">Por favor ingresa un email válido.</span>
+    </div>
   </div>
 
+  <!-- Contraseña -->
   <div class="mb-4 mx-5 w-1/3">
     <label for="password" class="label">Contraseña</label>
     <input id="password" type="password" formControlName="Password" class="input input-bordered w-full">
+    <div *ngIf="userForm.get('Password')?.invalid && (userForm.get('Password')?.dirty || userForm.get('Password')?.touched)" class="text-red-500 text-sm mt-1">
+      <span *ngIf="userForm.get('Password')?.errors?.['required']">La contraseña es requerida.</span>
+      <span *ngIf="userForm.get('Password')?.errors?.['minlength']">La contraseña debe tener al menos 8 caracteres.</span>
+    </div>
   </div>
 
+  <!-- Número de teléfono -->
   <div class="mb-4 mx-5 w-1/3">
-    <label for="phone" class="label">Numero Telefonico</label>
+    <label for="phone" class="label">Número Telefónico</label>
     <input id="phone" type="text" formControlName="Phone" class="input input-bordered w-full">
   </div>
 
+  <!-- Dirección -->
   <div class="mb-4 mx-5 w-1/3">
-    <label for="address" class="label">Direccion</label>
+    <label for="address" class="label">Dirección</label>
     <input id="address" type="text" formControlName="Address" class="input input-bordered w-full">
   </div>
 
+  <!-- Foto de Perfil -->
   <div class="mb-4 mx-5 w-1/3">
     <label for="imgProfile" class="label">Foto de Perfil</label>
     <input id="imgProfile" type="file" (change)="onFileChange($event)" accept="image/*" class="file-input file-input-bordered file-input-md w-full">
   </div>
 
+  <!-- Género -->
   <div class="mb-4 mx-5 w-1/5">
-    <label for="gender" class="label">Genero</label>
+    <label for="gender" class="label">Género</label>
     <select id="gender" formControlName="Gender" class="select select-bordered w-full">
-      <option value="" disabled>Select gender</option>
+      <option value="" disabled>Selecciona el género</option>
       <option value="Hombre">Hombre</option>
       <option value="Mujer">Mujer</option>
     </select>
+    <div *ngIf="userForm.get('Gender')?.invalid && (userForm.get('Gender')?.dirty || userForm.get('Gender')?.touched)" class="text-red-500 text-sm mt-1">
+      <span *ngIf="userForm.get('Gender')?.errors?.['required']">El género es requerido.</span>
+    </div>
   </div>
 
+  <!-- Rol -->
   <div class="mb-4 mx-5 w-1/5">
-    <label for="roleId" class="label">Role</label>
+    <label for="roleId" class="label">Rol</label>
     <select id="roleId" formControlName="RoleId" class="select select-bordered w-full">
       <option value="" disabled>Selecciona el rol</option>
-      <option value="1">Admininstrador</option>
-      <option value="2">Catedratico</option>
+      <option value="1">Administrador</option>
+      <option value="2">Catedrático</option>
     </select>
+    <div *ngIf="userForm.get('RoleId')?.invalid && (userForm.get('RoleId')?.dirty || userForm.get('RoleId')?.touched)" class="text-red-500 text-sm mt-1">
+      <span *ngIf="userForm.get('RoleId')?.errors?.['required']">El rol es requerido.</span>
+    </div>
   </div>
 
+  <!-- Botón de Submit -->
   <div class="justify-end flex mt-10 w-full">
-    <button type="submit" class="btn btn-primary w-1/4" [disabled]="userForm.invalid">Submit</button>
+    <button type="submit" class="btn btn-primary w-1/4" [disabled]="userForm.invalid">Enviar</button>
   </div>
 
 </form>
